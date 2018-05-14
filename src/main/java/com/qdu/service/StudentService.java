@@ -2,7 +2,13 @@ package com.qdu.service;
 
 import com.qdu.dao.StudentDao;
 import com.qdu.pojo.Course;
+import com.qdu.pojo.CourseFeedBackQuestion;
 import com.qdu.pojo.Student;
+import com.qdu.pojo.TeacherFeedBackQuestion;
+import com.qdu.pojo.TeachingProgram;
+import com.qdu.pojo.TeachingProgramDetail;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +21,25 @@ public class StudentService {
     @Autowired
     private StudentDao studentDao;
 
-    public Student getStudent(String rollno) {
-        return studentDao.findStudentByRollno(rollno);
+    public List<List<Object>> getCourseList(String rollno) {
+    	List<List<Object>> list=new ArrayList<>();
+    	List<Object> li;
+    	Course c;
+    	List<TeachingProgram> l=studentDao.findStudentByRollno(rollno).getBatch().getTeachingPrograms();
+        for(int i=0;i<l.size();i++) {
+        	c=l.get(i).getCourse();
+        	li=new ArrayList<>();
+        	li.add(c.getCourseId());
+        	li.add(c.getCourseName());
+        	li.add(c.getCourseExamMethod());
+        	li.add(c.getCoursecredit());
+        	li.add(c.getCourseSchoolHour());
+        	li.add(c.getTeacher().getTeacherName());
+        	li.add(c.getTeacher().getTeacherId());
+        	li.add(l.get(i).getTid());
+        	list.add(li);
+        }
+         return list;
     }
 
     public Student findStudent(String sid, String spwd) {
@@ -32,33 +55,24 @@ public class StudentService {
         return null;
     }
 
-    public Student updateStudent(Student student) {
-        System.out.println(student.getStudentId()+"ID");
-        Student s = studentDao.findStudentByRollno(student.getStudentId());
-        s = student;
-        System.out.println(s+"------");
-        
-        System.out.println(student);
-        return studentDao.updateStudent(s);
+    public void updateStudent(Student student) {
+    	studentDao.updateStudent(student);
     }
 
-    public List getCourseList(String studentId) {
-        return studentDao.getCourseList(studentId);
-    }
 
-    public List getCourseDetailList(String courseId) {
-        return studentDao.getCourseDetailList(courseId);
+    public List<TeachingProgramDetail> getCourseDetailList(int TID) {
+        return studentDao.getCourseDetailList(TID);
     }
 
     public List getAttendanceList(String studentId, String beginDate, String endDate) {
         return studentDao.getAttendanceList(studentId, beginDate, endDate);
     }
 
-    public List getCourseFeedBackQuestionList(String courseId) {
+    public List<CourseFeedBackQuestion> getCourseFeedBackQuestionList(String courseId) {
         return studentDao.getCourseFeedBackQuestionList(courseId);
     }
 
-    public List getTeacherFeedBackQuestionlist(String teacherId) {
+    public List<TeacherFeedBackQuestion> getTeacherFeedBackQuestionlist(String teacherId) {
         return studentDao.getTeacherFeedBackQuestionList(teacherId);
     }
 

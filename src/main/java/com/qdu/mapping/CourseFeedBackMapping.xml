@@ -37,6 +37,27 @@
 		select * from
 		coursefeedback where StudentID=#{studentId}
 	</select>
-
+	
+	<delete id="deleteCFBByStu" parameterType = "String">
+		delete from  coursefeedback where StudentID = #{sid}
+	</delete>
+	
+	<select id="getListByBatch" parameterType="int"
+		resultMap="CourseFeedBackResult">
+		select cfb.* from coursefeedback cfb,student s,batch b
+		where cfb.StudentID=s.StudentID
+		and s.StudentBatch=b.CID
+		and CID=#{batch}
+	</select>
+	
+	<delete id="deleteCFD" parameterType = "int">
+		delete from  coursefeedback where fid = #{sid}
+	</delete>
+	
+	<insert id="insertCFB" parameterType="HashMap">
+		insert into 
+		coursefeedback(StudentID,FQuestion,FOption) 
+		VALUES (#{studentId},#{qid},#{choice})
+	</insert>
 </mapper>
 

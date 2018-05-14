@@ -32,6 +32,19 @@
 		AND tf.FQuestion=tfq.QID
 		AND t.TeacherID=#{teacherId}
 	</select>
-
+	
+	<delete id="deleteTFBByStu" parameterType = "String">
+		delete from  teacherfeedback where Stud entID = #{sid}
+	</delete>
+	
+	<delete id="deleteTFD" parameterType = "int">
+		delete from  teacherfeedback where fid = #{sid}
+	</delete>
+	
+	<insert id="insertTFB" parameterType="HashMap">
+		insert into 
+		teacherfeedback(StudentID,FQuestion,FOption) 
+		VALUES (#{studentId},#{qid},#{choice})
+	</insert>
 </mapper>
 

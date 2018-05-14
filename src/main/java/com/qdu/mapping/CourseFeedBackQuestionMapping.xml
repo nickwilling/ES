@@ -16,5 +16,13 @@
 		CourseFeedBackQuestion
 		where QID = #{qid}
 	</select>
+	
+	<select id="selectQuestionByCid" resultMap="CourseFeedBackQuestionResult">
+		select *
+		from
+		CourseFeedBackQuestion
+		where CourseId = #{courseId}
+	</select>
+	
 </mapper>
 

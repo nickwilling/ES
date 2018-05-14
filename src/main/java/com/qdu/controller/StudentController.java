@@ -1,6 +1,7 @@
 
 package com.qdu.controller;
 
+import com.qdu.pojo.Attendance;
 import com.qdu.pojo.Batch;
 import com.qdu.pojo.CourseFeedBackQuestion;
 import com.qdu.pojo.Student;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value ="/student")
 public class StudentController {
     
-    Student student = null;
     
     @Autowired
     private StudentService studentService;
@@ -32,10 +32,10 @@ public class StudentController {
      map.addAttribute("stuList",studentService.getStudentList());
     return "Student";
     }
-      @RequestMapping(value="/welcome")
-    public String welcome(String sId,String sPwd,ModelMap map,HttpSession session){
-        student = studentService.findStudent(sId, sPwd);
-          System.out.println(student.getStudentName());
+    
+    @RequestMapping(value="/welcome.do")
+    public String welcome(String username,String password,ModelMap map,HttpSession session){
+        Student student = studentService.findStudent(username, password);
         session.setAttribute("student", student);
 
         map.addAttribute("student", student);
@@ -53,10 +53,10 @@ public class StudentController {
         return "login"; 
     } 
     //
-     @RequestMapping(value="/foredit")
+     @RequestMapping(value="/foredit.do")
     public String foredit(String rollno,ModelMap map,HttpSession session){ 
-         System.out.println("跳转");
-        Student s = student;
+        Student s = (Student)session.getAttribute("student");
+        
         if(s==null){
             System.out.println("空");
         }else{
@@ -65,19 +65,11 @@ public class StudentController {
         map.addAttribute("student",s); 
         return "Alter"; 
     }
-     @RequestMapping(value="/editStu")
-    public String edit(HttpServletRequest request,ModelMap map){ 
-        String stuId = request.getParameter("studentId");
-        String stuName = request.getParameter("studentName");
-        String stuPwd = request.getParameter("studentPwd");
-        String stuGrade = request.getParameter("studentGrade");
-        String batch = request.getParameter("batch");
-        String stuGender = request.getParameter("studentGender");
-        Batch b = new Batch();
-        b.setCid(Integer.parseInt(batch));
-        Student stu = new Student(stuId, b, stuName, stuPwd, stuGender, Integer.parseInt(stuGrade));
-        map.addAttribute("sList", studentService.updateStudent(stu)); 
-        System.out.println("修改成功");
+     @RequestMapping(value="/editStu.do")
+    public String edit(Student stu,ModelMap map){ 
+    	studentService.updateStudent(stu);
+        map.addAttribute("sList",stu ); 
+        
         return "Student";
     } 
     //
@@ -85,78 +77,81 @@ public class StudentController {
     public String ToAttendance(String studentId,String beginDate,String endDate,ModelMap map){
      return "Attendance";
     }
-    @RequestMapping(value = "/attendance")
-    public String showAttendance(String id,String beginDate,String endDate,ModelMap map){
-        System.out.println("--------------------------");
-        System.out.println(id);
-        System.out.println(studentService.getAttendanceList(id, beginDate, endDate).size());
-     map.addAttribute("attenList",studentService.getAttendanceList(id, beginDate, endDate));
-     return "Attendance";
+    @RequestMapping(value = "/attendance.do")
+    public String showAttendance(String id,String beginDate,String endDate,ModelMap map,HttpSession session){
+        //在SpringMVC 中使用session，就用HttpSession
+        Student s=(Student)session.getAttribute("student");
+        map.addAttribute("attenList",studentService.getAttendanceList(s.getStudentId(), beginDate, endDate));
+        List<Attendance> list=studentService.getAttendanceList(s.getStudentId(), beginDate, endDate);
+        System.out.println(list.size());
+        System.out.println(list.get(0).getAid());
+        return "Attendance";
     }
     //
-    @RequestMapping(value = "/showcourse")
-    public String showCourse(String studentId,ModelMap map){
-    map.addAttribute("courList",studentService.getCourseList(studentId));
-        System.out.println("00000000000000000"+ studentService.getCourseList(studentId).size());
+    @RequestMapping(value = "/showcourse.do")
+    public String showCourse(HttpSession session,ModelMap map){
+    Student s=(Student)session.getAttribute("student");
+    map.addAttribute("courList",studentService.getCourseList(s.getStudentId()));
     return "Courses";
     }
-    @RequestMapping(value = "/showcoursedetail")
-    public String showCoursedetail(String courseId,ModelMap map){
-    map.addAttribute("courdList",studentService.getCourseDetailList(courseId));
+    @RequestMapping(value = "/showcoursedetail.do")
+    public String showCoursedetail(int TID,ModelMap map){ 
+    map.addAttribute("courdList",studentService.getCourseDetailList(TID));
     return "CourseDetai";
     }
     //
-    @RequestMapping(value = "/forcFeedBack")
-    public String ForCFeedBack(String courseId,ModelMap map){
-    map.addAttribute("cquestionList",studentService.getCourseFeedBackQuestionList(courseId));
+    @RequestMapping(value = "/forcFeedBack.do")
+    public String ForCFeedBack(){
+   
    return "CourseID";
     }
-    @RequestMapping(value = "/forccFeedBack")
+    @RequestMapping(value = "/forccFeedBack.do")
     public String ForCCFeedBack(String courseId,ModelMap map){
         System.out.println("-----------------"+courseId);    
-        
-    map.addAttribute("cquestionList",studentService.getCourseFeedBackQuestionList(courseId));
-        System.out.println(studentService.getCourseFeedBackQuestionList(courseId).size());
-   return "CourseFeedBack";
+        map.addAttribute("cquestionList",studentService.getCourseFeedBackQuestionList(courseId));
+        map.addAttribute("courseId",courseId);
+   return "CourseID";
     }
-    @RequestMapping(value = "/addcFeedBack")
-    public String addCourseFeedBack(HttpServletRequest req,String studentId,ModelMap map){
-        List<CourseFeedBackQuestion> list=studentService.getCourseFeedBackQuestionList(studentId);
+    @RequestMapping(value = "/addcFeedBack.do")
+    public String addCourseFeedBack(HttpServletRequest req,HttpSession session,String courseId,ModelMap map){
+        List<CourseFeedBackQuestion> list=studentService.getCourseFeedBackQuestionList(courseId);
+        Student s=(Student)session.getAttribute("student");
         for(int i=0;i<list.size();i++){
             int qid;
             int choice;
             CourseFeedBackQuestion cq=list.get(i); //获取当前问题
             qid=cq.getQid();
             choice=Integer.parseInt(req.getParameter("cq"+qid));//获取用户当前问题的选择
-            studentService.insertCourseFeedBack(qid, choice, studentId);
-              map.addAttribute("addcfb",studentService.insertTeacherFeedBack(qid, choice, studentId));   
+            studentService.insertCourseFeedBack(qid, choice, s.getStudentId());
         }
               
          return "CourseID";
     }
 
-    
-    @RequestMapping(value = "/fortFeedBack")
-    public String ForTFeedBack(String teacherId,ModelMap map){
-    map.addAttribute("tquestionList",studentService.getTeacherFeedBackQuestionlist(teacherId));
+    @RequestMapping(value = "/forttFeedBack.do")
+    public String ForTTFeedBack(){
+   
    return "TeacherID";
     }
-        @RequestMapping(value = "/forttFeedBack")
-    public String ForTTFeedBack(String teacherId,ModelMap map){
+    
+    @RequestMapping(value = "/fortFeedBack.do")
+    public String ForTFeedBack(String teacherId,ModelMap map){
     map.addAttribute("tquestionList",studentService.getTeacherFeedBackQuestionlist(teacherId));
-   return "TeacherFeedBack";
+    map.addAttribute("teacherId",teacherId);
+    return "TeacherID";
     }
-        @RequestMapping(value = "/addtFeedBack")
-  public String addTeacherFeedBack(HttpServletRequest req,String studentId,ModelMap map){
-        List<TeacherFeedBackQuestion> list=studentService.getTeacherFeedBackQuestionlist(studentId);
+    
+   @RequestMapping(value = "/addtFeedBack.do")
+  public String addTeacherFeedBack(HttpServletRequest req,HttpSession session,String teacherId,ModelMap map){
+        List<TeacherFeedBackQuestion> list=studentService.getTeacherFeedBackQuestionlist(teacherId);
+        Student s=(Student)session.getAttribute("student");
         for(int i=0;i<list.size();i++){
             int qid;
             int choice;
             TeacherFeedBackQuestion cq=list.get(i); //获取当前问题
             qid=cq.getQid();
             choice=Integer.parseInt(req.getParameter("cq"+qid));
-            studentService.insertTeacherFeedBack(qid, choice, studentId);
-            map.addAttribute("addcfb",studentService.insertTeacherFeedBack(qid, choice, studentId));  
+            studentService.insertTeacherFeedBack(qid, choice, s.getStudentId());
     }
         return "TeacherID";
 }

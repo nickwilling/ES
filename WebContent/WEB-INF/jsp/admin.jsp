@@ -221,6 +221,7 @@
 		</script>
     </head>
     <body>
+    <canvas id="demo-canvas" style="position: absolute"></canvas>
         <div class="header">
             <a href="#" style="margin-left: 30px;">QingDao University</a>
             <a href="#" style="margin-left: 100px;"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
@@ -373,19 +374,19 @@
                 <div class="div5">
                     <form>
                         <span>学生ID:&nbsp;&nbsp;</span>
-                        <input name="studentID" class="inputID" type="text" placeholder="&nbsp;&nbsp;StudentID"/><br/><br/>
+                        <input name="studentId" class="inputID" type="text" placeholder="&nbsp;&nbsp;StudentID"/><br/><br/>
                         <span>学生姓名:</span>
                         <input name="studentName" class="inputID" type="text" placeholder="&nbsp;&nbsp;StudentName"/><br/><br/>
                         <span>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</span>
                         <label>
-                            <input type="radio" name="gender" id="optionsRadios1" value="男" checked>男
+                            <input type="radio" name="studentGender" id="optionsRadios1" value="男" checked>男
                         </label>
                         <label style="margin-left: 20px;">
-                            <input type="radio" name="gender" id="optionsRadios2" value="女">女
+                            <input type="radio" name="studentGender" id="optionsRadios2" value="女">女
                         </label>
                         <br/><br/>
                         <span>入学年份:</span>
-                        <select name="ruxue" style="width: 10%;display: inline-block" class="form-control">
+                        <select name="studentGrade" style="width: 10%;display: inline-block" class="form-control">
                             <option value="2011">2011</option>
                             <option value="2012">2012</option>
                             <option value="2013">2013</option>
@@ -393,8 +394,8 @@
                         </select>
                         <br/><br/>
                         <span>班&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;级:</span>
-                        <input name="batch" class="inputID" type="text" placeholder="&nbsp;&nbsp;Batch"/><br/><br/>
-                        <button type="submit" formaction="addStudent" class="btn btn-primary addbtn">确认添加</button>
+                        <input name="batch.cid" class="inputID" type="text" placeholder="&nbsp;&nbsp;Batch"/><br/><br/>
+                        <button type="submit" formaction="addStudent.do" class="btn btn-primary addbtn">确认添加</button>
                     </form>
                 </div>
                 <div class="div6">
@@ -411,7 +412,7 @@
                         <span class="span">
                             <span id="sel0" style="display: block;margin-top: -34px;margin-left: 300px;">
 
-                                <button type="submit"  formaction="selectCFD" style="margin-left: 100px;margin-top: -8px;" class="btn btn-primary addbtn">查询</button>
+                                <button type="submit"  formaction="selectCFD.do" style="margin-left: 100px;margin-top: -8px;" class="btn btn-primary addbtn">查询</button>
                             </span>
                         </span>
                     </form>
@@ -421,7 +422,7 @@
                 <div class="div9">
                     <form>
                         <input name="teacherId" class="inputName" type="text" placeholder="&nbsp;&nbsp;TeacherFeedBack ID"/>      
-                        <button type="submit" formaction="selectTFD" style="margin-left: 100px;margin-top: -8px;" class="btn btn-primary addbtn">查询</button>
+                        <button type="submit" formaction="selectTFD.do" style="margin-left: 100px;margin-top: -8px;" class="btn btn-primary addbtn">查询</button>
                     </form>
                     <br/><br/>
                 </div> 

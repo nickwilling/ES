@@ -22,6 +22,12 @@
 		Student
 		where StudentID = #{studentId}
 	</select>
+	
+	<select id="selectStudentByUandP" parameterType="HashMap" resultMap="StudentResult">
+		select * from
+		Student
+		where StudentID = #{username} and StudentPwd = #{password}
+	</select>
 
 	<select id="getStudentListByBatch" parameterType="int"
 		resultMap="StudentResult">
@@ -29,9 +35,27 @@
 		Student where StudentBatch=#{cid}
 	</select>
 	
+	<insert id="insertStudent" parameterType="com.qdu.pojo.Student">
+		insert into Student
+		values(#{studentId},#{studentName},#{studentPwd},#{studentGender},#{studentGrade},#{batch.cid})
+	</insert>
+	
 	<update id="updateStudent" parameterType="com.qdu.pojo.Student">
 		update Student set
 		StudentName = #{studentName},
+		StudentGender = #{studentGender},
+		StudentGrade = #{studentGrade},
+		StudentBatch = #{batch.cid}
+		where StudentID= #{studentId}
+	</update>
+	
+	<delete id="deleteStudent" parameterType = "String">
+		delete from  Student where StudentID = #{sid}
+	</delete>
+	
+	<update id="updateStu" parameterType="com.qdu.pojo.Student">
+		update Student set
+		StudentPwd = #{studentPwd},
 		StudentGender = #{studentGender},
 		StudentGrade = #{studentGrade},
 		StudentBatch = #{batch.cid}

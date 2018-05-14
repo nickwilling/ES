@@ -28,6 +28,11 @@
 		select * from
 		Course where TeacherID=#{teacherId}
 	</select>
-
+	
+	<select id="selectCourseByTId" resultMap="CourseResult">
+		select * from
+		Course
+		where TeacherID = #{teacherId}
+	</select>
 </mapper>
 

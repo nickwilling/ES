@@ -109,49 +109,45 @@ public class AdminController {
         return "selectStudent1";
     }
 
-    @RequestMapping(value = "/addStudent")
-    public String addStudent(String studentID, String studentName, String gender, int ruxue, int batch, ModelMap map) {
-
-        adminService.addStudent(studentID, studentName, gender, ruxue, batch);
+    @RequestMapping(value = "/addStudent.do")
+    public String addStudent(Student stu, ModelMap map) {
+        adminService.addStudent(stu);
         return "TP";
     }
 
     @RequestMapping(value = "/editStudent.do")
     public String editStudent(Student stu, int batchID, ModelMap map) {
-    	System.out.println("------------");
     	adminService.editStudent(stu, batchID);
         return "TP";
     }
 
-    @RequestMapping(value = "/deleteStudent")
+    @RequestMapping(value = "/deleteStudent.do")
     public String deleteStudent(String sid, ModelMap map) {
-
         adminService.deleteStudent(sid);
         return "TP";
     }
 
-    @RequestMapping(value = "/selectCFD")
-
+    @RequestMapping(value = "/selectCFD.do")
     public String selectCFD(int batch, ModelMap map) {
         map.addAttribute("CFDList", adminService.selectCFD(batch));
 
         return "selectCourseFeedBack";
     }
 
-    @RequestMapping(value = "/deleteCFB")
+    @RequestMapping(value = "/deleteCFB.do")
     public String deleteCFB(int id) {
         adminService.deleteCFD(id);
 
         return "course";
     }
 
-    @RequestMapping(value = "/selectTFD")
+    @RequestMapping(value = "/selectTFD.do")
     public String selectTFD(String teacherId, ModelMap map) {
         map.addAttribute("TFDList", adminService.selectTFD(teacherId));
         return "selectTeacherFeedBack";
     }
 
-    @RequestMapping(value = "/deleteTFB")
+    @RequestMapping(value = "/deleteTFB.do")
     public String deleteTFB(int id) {
         adminService.deleteTFD(id);
 

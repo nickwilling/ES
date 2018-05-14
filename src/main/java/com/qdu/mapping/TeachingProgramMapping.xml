@@ -58,6 +58,21 @@
 		TTeacher = #{teacher.teacherId}
 		where TID= #{tid}
 	</update>
-
+	
+	<select id="selectTPByBandT" parameterType="HashMap"
+		resultMap="TeachingProgramResult">
+		select tp.*
+		from batch b, teacher t,teachingprogram tp
+		where b.CID=tp.TBatch  and t.TeacherID=tp.TTeacher
+		and b.CID=#{cid} and t.TeacherID=#{teacherId}
+	</select>
+	
+	<select id="selectTPByCandT" parameterType="HashMap"
+		resultMap="TeachingProgramResult">
+		select tp.*
+		from course c, teacher t,teachingprogram tp
+		where c.CourseID=tp.TCourse  and t.TeacherID=tp.TTeacher
+		and c.CourseID=#{cid} and t.TeacherID=#{teacherId}
+	</select>
 </mapper>
 

@@ -1,7 +1,17 @@
 package com.qdu.service;
 
 import com.qdu.dao.TeacherDao;
+import com.qdu.pojo.Attendance;
+import com.qdu.pojo.Batch;
+import com.qdu.pojo.Course;
+import com.qdu.pojo.Student;
+import com.qdu.pojo.Teacher;
+import com.qdu.pojo.TeachingProgram;
+import com.qdu.pojo.TeachingProgramDetail;
+
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,38 +24,35 @@ public class TeacherService {
     @Autowired
     private TeacherDao teacherDao;
     
-    public List getBatchList(){
-        return teacherDao.getBatchList();
+    public Teacher findTeacher(String sid, String spwd) {
+        return teacherDao.findTeacher(sid, spwd);
     }
-    public List getCourseList(){
-        return teacherDao.getCourseList();
+    
+    public List<Batch> getBatchList(String teacherId){
+        return teacherDao.getBatchList(teacherId);
+    }
+    public List<Course> getCourseList(String teacherId){
+        return teacherDao.getCourseList(teacherId);
     }
 
-    public List getTPListByBatch(int cid){
-         
-         return teacherDao.getTPListByBatch(cid) ;
+    public List<TeachingProgram> getTPListByBatch(int cid,String teacherId){
+         return teacherDao.getTPListByBatch(cid,teacherId) ;
     }
     
-    public List getTPListByCourse(String cid){
-         
-         return teacherDao.getTPListByCourse(cid) ;
+    public List<TeachingProgram> getTPListByCourse(String cid,String teacherId){
+         return teacherDao.getTPListByCourse(cid,teacherId) ;
     }
     
-    public List getAttendance(){
-         
-         return teacherDao.getAttendance() ;
+    public List<Attendance> getAttendance(int batch,String beginDate,String endDate){       
+         return teacherDao.getAttendance(batch,beginDate,endDate) ;
     }
-    public List getAbsence(){
+
+    public List<Attendance> getAttendanceByStudent(String rollno){
          
-         return teacherDao.getAbsence() ;
-    }
-    
-    public List getAttendanceByStudent(){
-         
-         return teacherDao.getAttendanceByStudent();
+         return teacherDao.getAttendanceByStudent(rollno);
     }
     
-    public List getTop20(){
+    public List<Map<String,Object>> getTop20(){
          
          return teacherDao.getTop20();
     }

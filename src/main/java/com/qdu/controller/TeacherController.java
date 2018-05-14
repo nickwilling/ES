@@ -1,10 +1,9 @@
 package com.qdu.controller;
 
-
+import com.qdu.pojo.Teacher;
 import com.qdu.service.TeacherService;
 
-import java.util.List;
-
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,79 +16,72 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
     
-    @RequestMapping(value = "/showIndex")
-    public String showIndex(){
-        return "select";
+    
+   
+    @RequestMapping(value = "/showIndex.do")
+    public String showIndex(String username,String password,ModelMap map,HttpSession session){
+    	Teacher teacher= teacherService.findTeacher(username, password);
+        session.setAttribute("teacher", teacher);
+        map.addAttribute("teacher", teacher);
+        return "Teacher";
     }
     
-    @RequestMapping(value = "/updateContent")
-    public String updateContent(){
-        return "management";
-    }
+
             
-    @RequestMapping(value = "/checkBatch")
-    public String checkBatch(ModelMap map){
-        map.addAttribute("batchList", teacherService.getBatchList());
+    @RequestMapping(value = "/checkBatch.do")
+    public String checkBatch(HttpSession session,ModelMap map){
+    	Teacher t=(Teacher)session.getAttribute("teacher");
+        map.addAttribute("batchList", teacherService.getBatchList(t.getTeacherId()));
         return "batch";
     }
     
-    @RequestMapping(value = "/showTPByBatch")
-    public String showTeachingProgramOfBatch(int cid,ModelMap map){
-        map.addAttribute("TPList", teacherService.getTPListByBatch(cid));
+    @RequestMapping(value = "/showTPByBatch.do")
+    public String showTeachingProgramOfBatch(int cid,String cname,HttpSession session,ModelMap map){
+    	Teacher t=(Teacher)session.getAttribute("teacher");
+        map.addAttribute("TPList", teacherService.getTPListByBatch(cid,t.getTeacherId()));
+        map.addAttribute("name",cname);
         return "result";
     }
     
-    @RequestMapping(value = "/checkCourse")
-    public String checkCourse(ModelMap map){
-        map.addAttribute("courseList", teacherService.getCourseList());
+    @RequestMapping(value = "/checkCourse.do")
+    public String checkCourse(HttpSession session,ModelMap map){
+    	Teacher t=(Teacher)session.getAttribute("teacher");
+        map.addAttribute("courseList", teacherService.getCourseList(t.getTeacherId()));   
         return "course";
     }
     
-    @RequestMapping(value = "/showTPByCourse")
-    public String showTeachingProgramByCourse(String cid,ModelMap map){
-        map.addAttribute("TPList", teacherService.getTPListByCourse(cid));
-        return "courseTP";
+    @RequestMapping(value = "/showTPByCourse.do")
+    public String showTeachingProgramByCourse(HttpSession session,String cid,ModelMap map){
+    	Teacher t=(Teacher)session.getAttribute("teacher");
+        map.addAttribute("TPList", teacherService.getTPListByCourse(cid,t.getTeacherId()));
+        return "result";
     }
 
-    @RequestMapping(value = "/manageAttendance")
+    @RequestMapping(value = "/manageAttendance.do")
     public String manageAttendance(){
         return "manageAttendance";
     }
-    @RequestMapping(value = "/showAttendace")
-    public String showAttendance(ModelMap map){
-        List list=teacherService.getAttendance();
-        Object[] objects=(Object[])list.get(0);
-//        System.out.println("--------------"+((Student)objects[1]).getStudentName());
-        map.addAttribute("aList",list );
+    @RequestMapping(value = "/showAttendace.do")
+    public String showAttendance(int batch,String beginDate,String endDate,ModelMap map){     
+        map.addAttribute("aList",teacherService.getAttendance(batch,beginDate,endDate));
         return "manageAttendance";
     }
     
-    @RequestMapping(value = "/showAbsence")
-    public String showAbsence(ModelMap map){
-        List list=teacherService.getAbsence();
-        System.out.println("aaaaaaaaaa"+list.size());
-        map.addAttribute("aList",list );
-        return "manageAttendance";
-    }
     
-    @RequestMapping(value = "/manageAttendanceByStudent")
+    @RequestMapping(value = "/manageAttendanceByStudent.do")
     public String manageAttendanceByStudent(){
         return "manageAttendanceByStudent";
     }
     
-    @RequestMapping(value = "/showAttendaceByStudent")
-    public String showAttendanceByStudent(ModelMap map){
-        List list=teacherService.getAttendanceByStudent();
-        Object[] objects=(Object[])list.get(0);
-//        System.out.println("--------------"+((Student)objects[1]).getStudentName());
-        map.addAttribute("aList",list );
+    @RequestMapping(value = "/showAttendaceByStudent.do")
+    public String showAttendanceByStudent(String rollno,ModelMap map){
+        map.addAttribute("aList",teacherService.getAttendanceByStudent(rollno));
         return "manageAttendanceByStudent";
     }
     
-    @RequestMapping(value = "/showTop20")
+    @RequestMapping(value = "/showTop20.do")
     public String showTop(ModelMap map){
-        List list=teacherService.getTop20();
-        map.addAttribute("top20",list );
+        map.addAttribute("top20",teacherService.getTop20());
         return "top20";
     }
     

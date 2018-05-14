@@ -97,8 +97,9 @@ public class AdminDao {
         return sqlSessionFactory.openSession().selectOne(statement, studentId);
     }
 
-    public void addStudent(String studentID, String studentName, String gender, int ruxue, int batch) {
-       
+    public void addStudent(Student stu) {
+    	String statement = "com.qdu.mapping.StudentMapping.insertStudent";
+        sqlSessionFactory.openSession().insert(statement, stu);
     }
     
     public void editStudent(Student stu) {
@@ -107,25 +108,36 @@ public class AdminDao {
     }
 
     public void deleteStudent(String sid) {
-       
+    	 String statement1 = "com.qdu.mapping.StudentMapping.deleteStudent";
+    	 String statement2 = "com.qdu.mapping.CourseFeedBackMapping.deleteCFBByStu";
+    	 String statement3 = "com.qdu.mapping.TeacherFeedBackMapping.deleteTFBByStu";
+    	 String statement4 = "com.qdu.mapping.AttendanceMapping.deleteAttenByStu";
+         SqlSession session=sqlSessionFactory.openSession();
+         session.delete(statement2, sid);
+         session.delete(statement3, sid);
+         session.delete(statement4, sid);
+         session.delete(statement1, sid);
+         session.close();
     }
 
-    public List selectCFD(int batch) {
-       
-        return null;
+    public List<CourseFeedBack> selectCFD(int batch) {
+    	String statement = "com.qdu.mapping.CourseFeedBackMapping.getListByBatch";
+        return sqlSessionFactory.openSession().selectList(statement, batch);
     }
 
     public void deleteCFD(int sid) {
-       
+       String statement ="com.qdu.mapping.CourseFeedBackMapping.deleteCFD";
+       sqlSessionFactory.openSession().delete(statement,sid);
     }
 
-    public List selectTFD(String teacherId) {
-       
-        return null;
+    public List<TeacherFeedBack> selectTFD(String teacherId) {
+    	String statement = "com.qdu.mapping.TeacherFeedBackMapping.getTeacherFeedBackListByTeacher";
+        return sqlSessionFactory.openSession().selectList(statement, teacherId);
     }
 
     public void deleteTFD(int sid) {
-      
+    	String statement ="com.qdu.mapping.TeacherFeedBackMapping.deleteTFD";
+        sqlSessionFactory.openSession().delete(statement,sid);
     }
 
 }

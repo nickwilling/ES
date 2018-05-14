@@ -19,5 +19,11 @@
 		Teacher
 		where TeacherID = #{teacherId}
 	</select>
+	
+	<select id="selectTeacherByUandP" parameterType="HashMap" resultMap="TeacherResult">
+		select * from
+		Teacher
+		where TeacherID = #{username} and TeacherPwd = #{password}
+	</select>
 </mapper>
 

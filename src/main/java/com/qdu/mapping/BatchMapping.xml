@@ -15,5 +15,11 @@
 		where CID = #{cid}
 	</select>
 	
+	<select id="selectBatchByTId" resultMap="BatchResult">
+		SELECT b.* from batch b, teachingprogram tp,teacher t
+		where b.CID=tp.TBatch and t.TeacherID=tp.TTeacher 
+		and t.TeacherID=#{teacherId}
+	</select>
+	
 </mapper>
 

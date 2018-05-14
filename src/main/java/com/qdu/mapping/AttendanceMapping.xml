@@ -24,10 +24,43 @@
 		Attendance where StudentID=#{studentId}
 	</select>
 	
+	<select id="selectAttendanceListByDate" parameterType="HashMap"
+		resultMap="AttendanceResult">
+		SELECT * from 
+		Attendance where studentID=#{studentId} and ADate BETWEEN #{beginDate} and #{endDate}
+	</select>
+	
 	<delete id="deleteAttendance" parameterType = "int">
-
-	delete from Attendance where TPDID = #{id}
+		delete from Attendance where TPDID = #{id}
+	</delete>
+	
+	<delete id="deleteAttenByStu" parameterType = "String">
+		delete from Attendance where StudentID = #{sid}
 	</delete>
 		
+	<select id="selectAttendanceByBandD" parameterType="HashMap"
+		resultMap="AttendanceResult">
+		select a.*
+		from attendance a,batch b,student s
+		where a.StudentID=s.StudentID and s.StudentBatch=b.CID
+		and b.CID=#{batch} and ADate BETWEEN #{beginDate} and #{endDate}
+	</select>
+	
+	<select id="selectAttendanceByStu" parameterType="String"
+		resultMap="AttendanceResult">
+		SELECT * FROM attendance where StudentID=#{rollno}
+	</select>
+	
+	<select id="selectAttendanceTOP20" parameterType="String"
+		resultType="java.util.HashMap">
+		select  a.StudentID as id, s.StudentName as name,b.CName as batch,count(*) as c 
+		from Attendance as a,Student as s,Batch as b
+		where AState=0
+		and s.StudentID=a.StudentID
+		and s.StudentBatch=b.CID
+		Group By a.StudentID,s.StudentName,b.CName
+		order by count(*) desc limit 0,20;
+	</select>
+	
 </mapper>
 

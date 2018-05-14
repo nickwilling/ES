@@ -246,9 +246,9 @@ public class AdminService {
         return adminDao.selectStudent(studentId);
     }
 
-    public void addStudent(String studentID, String studentName, String gender, int ruxue, int batch) {
-
-        adminDao.addStudent(studentID, studentName, gender, ruxue, batch);
+    public void addStudent(Student stu) {
+    	stu.setStudentPwd("123456");
+        adminDao.addStudent(stu);
 
     }
 
@@ -272,7 +272,8 @@ public class AdminService {
     }
 
     public List selectTFD(String teacherId) {
-        return adminDao.selectTFD(teacherId);
+//return adminDao.selectTFD(teacherId); 两种方法都可以。1.通过连接查询查出列表 2.因为Teacher表里有TeacherFeedBack列表所以直接返回就好
+    	return testDao.selectTeacherById(teacherId).getTeacherFeedBacks();
     }
 
     public void deleteTFD(int sid) {

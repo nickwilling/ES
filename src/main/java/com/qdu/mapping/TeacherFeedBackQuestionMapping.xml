@@ -16,6 +16,11 @@
 		TeacherFeedBackQuestion
 		where QID = #{qid}
 	</select>
-
+	<select id="selectQuestionByTid" resultMap="TeacherFeedBackQuestionResult">
+		select *
+		from
+		TeacherFeedBackQuestion
+		where TeacherId = #{teacherId}
+	</select>
 </mapper>
 
